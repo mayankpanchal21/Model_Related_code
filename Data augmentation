@@ -1,0 +1,32 @@
+import tensorflow as tf
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Initialize the ImageDataGenerator with various augmentation techniques
+datagen = ImageDataGenerator(
+    rotation_range=40,  # Random rotation between 0 and 40 degrees
+    width_shift_range=0.2,  # Random horizontal shift (20% of the width)
+    height_shift_range=0.2,  # Random vertical shift (20% of the height)
+    shear_range=0.2,  # Shear transformations
+    zoom_range=0.2,  # Random zoom
+    horizontal_flip=True,  # Randomly flip images horizontally
+    fill_mode='nearest',  # Fill mode for empty pixels after transformations
+)
+
+# Load a sample image
+# You can load your own image here. Replace with the path to your image file.
+image = tf.keras.preprocessing.image.load_img('path_to_your_image.jpg')
+image_array = tf.keras.preprocessing.image.img_to_array(image)
+image_array = np.expand_dims(image_array, axis=0)  # Add batch dimension
+
+# Create an iterator to apply augmentations
+augmented_images = datagen.flow(image_array, batch_size=1)
+
+# Generate augmented images and display them
+fig, axes = plt.subplots(1, 5, figsize=(15, 15))
+for i in range(5):  # Display 5 augmented images
+    augmented_image = next(augmented_images)[0].astype('uint8')
+    axes[i].imshow(augmented_image)
+    axes[i].axis('off')
+plt.show()
